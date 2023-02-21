@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <title>05 黃姿勳 Calencder</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <style>
+.div{
+
+    padding: 10px;
+    margin: 20px;
+    background-color: #ccc;
+    
+}
+
+p{
+    font-size: 20px;
+    font-weight: bold;
+    color: brown;
+}
+
+.o{
+    font-size: 15px;
+    margin: 3px;
+}
+    </style>
+</head>
+
+<body>
+    <div id="app" class="div">
+        <select class="o" v-model="selectedYear" >
+            <option  v-for="year in years">{{year}}</option>
+        </select>
+        <select class="o" v-model="selectedMonth"  @change="updateDays">
+            <option v-for="month in 12">{{month}}</option>
+        </select>
+        <select class="o" v-model="selectedDate">
+            <option v-for="day in days">{{day}}</option>
+        </select>
+
+        <p>你所選的日期是西元 {{selectedYear}}年{{selectedMonth}}月{{selectedDate}}日</p>
+    </div>
+    <script>
+        const app = {
+            data() { //data()定義應用程式中要使用的數據
+                return {
+                    years: [2019,2020,2021,2022,2023,2024,2025,2026],
+                    days: 1,
+                    selectedYear: new Date().getFullYear(),
+                    selectedMonth: new Date().getMonth() + 1,
+                    selectedDate: new Date().getDate(),
+                }
+            },
+            methods: {//methods屬性，處理閏年
+                // 閏年條件為：當該年份能被4整除，但不能被100整除，或者能被400整除。
+                SpecialYear(year) {
+                    return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
+                },
+                updateDays() {
+                    switch (this.selectedMonth) {
+                        case 1:
+                        case 3:
+                        case 5:
+                        case 7:
+                        case 8:
+                        case 10:
+                        case 12:
+                            this.days = 31;
+                            break;
+                        case 4:
+                        case 6:
+                        case 9: 
+                        case 11:
+                            this.days = 30;
+                            break;
+                        case 2:
+                            this.days = this.SpecialYear(this.selectedYear) ? 29 : 28;
+                            break;
+                    }
+                }
+            },
+            created() { //初始化下拉選單選項
+                this.updateDays();
+            },
+          
+        }
+        const vm = Vue.createApp(app);
+        vm.mount('#app');
+    </script>
+</body>
+
+</html>

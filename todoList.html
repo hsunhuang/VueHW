@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3</title>
+    <script src="https://unpkg.com/vue@3"></script>
+    <!-- <script src="../Js/vue.global.js"></script> -->
+    <style>
+        .theItem {
+            font: 18xp Tahoma;
+            background-color: #abc;
+            margin: 5px;
+            padding: 5px;
+        }
+
+        .theItem:hover {
+            cursor: pointer;
+            background-color: #cba;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <todo-list></todo-list>
+    </div>
+    <script>
+        const app = {
+            data() {
+                return {
+
+                }
+            },
+            methods: {
+
+            },
+            computed: {
+
+            },
+        }
+        const vm = Vue.createApp(app);
+        vm.component('todo-list', {
+            data() {
+                return {
+                    tasks: [],
+                }
+            },
+            methods: {
+                addTask(item) {
+                    this.tasks.push(item);
+                },
+                removeTask(item) {
+                    this.tasks.splice(this.tasks.indexOf(item), 1);
+                },
+            },
+            template: `
+            <todo-input @inputData="addTask"></todo-input>
+            <ol>
+                <todo-item v-for="task in tasks" :item="task" @click="removeTask(task)"></todo-item>
+            </ol>
+            `,
+        });
+        vm.component('todo-input', {
+            data() {
+                return {
+                    task: '',
+                }
+            },
+            template: `
+            <form @submit.prevent="submitData">
+                Your task: <input type="text" v-model="task">
+                <button>Submit</button>
+            </form>
+            `,
+            methods: {
+                submitData() {
+                    this.$emit('inputData', this.task);
+                    this.task = '';
+                },
+            }
+        });
+        vm.component('todo-item', {
+            props: ['item'],
+            template: `
+            <li class="theItem">{{item}}</li>
+            `,
+            methods: {
+
+            }
+        });
+        vm.mount('#app')
+    </script>
+</body>
+
+</html>
